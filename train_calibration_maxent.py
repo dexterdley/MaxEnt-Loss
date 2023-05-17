@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Aug 14 18:30:17 2020
 
-@author: aisg
-"""
 # imports
 import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
