@@ -14,3 +14,10 @@ As TinyImageNet-C and Wilds benchmarks are larger, additional support scripts fo
 >1.)The main script of interest is in "train_calibration_maxent.py". \
 >2.)MaxEnt Loss and the other loss functions are implemented in "losses.py"\
 >3.)The Lagrange multipliers are computed with our implementation of the Newton Raphson method in "maxent_newton_solver.py" which requires only CPU.
+
+## OOD Model Calibration with MaxEnt Loss
+![Curves](https://github.com/dexterdley/Blind_MaxEnt/blob/master/figures/cifarc_plots.png)
+
+Under the influence of OOD, many objective functions become miscalibrated. In this work we propose considering constraints observed from the training set to improve OOD calibration. We show that MaxEnt loss delivers well calibrated models OOD, for more details please refer to the main paper.
+
+![Reliability](https://github.com/dexterdley/Blind_MaxEnt/blob/master/figures/cifarc_bin_strength_reliability.png)
