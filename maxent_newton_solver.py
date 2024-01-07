@@ -104,7 +104,6 @@ def solve_multiple_lagrange(x, mu, var, lam1=0, lam2=0, max_iter = 1000, tol = 1
         # Newton-Raphson equation
         d = np.linalg.solve(J, b) #Jx = b -> x = J^-1b
         lam = torch.tensor(d) + old_lam
-        #print("Iteration" + str(i) + ": x = " + str(lam) + ", f(x) = " +  str( compute_fx(lam1, lam2, x, mu, var) ) )
 
         old_lam = lam
         i += 1
@@ -170,7 +169,6 @@ class VarianceMaxEnt_Model(nn.Module):
         while abs( self.fx_var(lam, x, mu, var) ) > tol: #run the helper function and check
 
           lam = old_lam - self.fx_var(lam, x, mu, var)/self.dxfx_var(lam, x, mu)  # Newton-Raphson equation
-          #print("Iteration" + str(i) + ": x = " + str(lam) + ", f(x) = " +  str( self.fx_var(lam, x, mu, var) ) )  
           
           old_lam = lam
           i += 1
@@ -205,7 +203,6 @@ class VarianceMaxEnt_Model_1(nn.Module):
         while abs( self.fx_var(lam, x, var) ) > tol: #run the helper function and check
 
           lam = old_lam - self.fx_var(lam, x, var)/self.dxfx_var(lam, x)  # Newton-Raphson equation
-          #print("Iteration" + str(i) + ": x = " + str(lam) + ", f(x) = " +  str( self.fx_var(lam, x, var) ) )  
           
           old_lam = lam
           i += 1
@@ -246,7 +243,6 @@ class MultipleMaxEnt_Model(nn.Module):
 
     def compute_fx(self, lam1, lam2, x, mu, var):
         b = np.empty([2, 1])
-        #print(b, b.shape)
         b[0,0] = self.fx_1(lam1, lam2, x, mu)
         b[1,0] = self.fx_2(lam1, lam2, x, mu, var)
         
@@ -268,7 +264,6 @@ class MultipleMaxEnt_Model(nn.Module):
         old_lam = lam
 
         while abs( self.compute_fx(lam1, lam2, x, mu, var).mean() ) > tol: #run the helper function and check
-          #print(old_lam)
           lam1, lam2 = old_lam
           #Put initial guess
           b = self.compute_fx(lam1, lam2, x, mu, var)
@@ -277,9 +272,7 @@ class MultipleMaxEnt_Model(nn.Module):
           #Jx = b -> x = J^-1b
           d = np.linalg.solve(J, b) # Newton-Raphson equation
           lam = d + old_lam
-          #print("Iteration" + str(i) + ": x = " + str(lam) + ", f(x) = " +  str( self.compute_fx(lam1, lam2, x, mu, var) ) )
-          #print(": x = " + str(lam) )
-          #print(J)
+
           old_lam = lam
           i += 1
 
@@ -287,93 +280,3 @@ class MultipleMaxEnt_Model(nn.Module):
             break
 
         self.lam = lam
-
-'''
-mean_model = MeanMaxEnt_Model()
-variance_model = VarianceMaxEnt_Model_1()
-multiple_model = MultipleMaxEnt_Model()
-
-prior = np.array([0.0938, 0.0967, 0.0908, 0.1123, 0.1045, 0.0938, 0.0996, 0.1016, 0.0977,0.1094])
-x = np.array(range(len(prior)))
-
-mean = 4.5
-variance = 28.5
-
-mean_model(x, mean, lam=0)
-print(mean_model.lam)
-mean_probs = mean_model.predict_distribution(x, mean_model.lam)
-
-variance_model(x, variance, lam=0)
-print(variance_model.lam)
-var_probs = variance_model.predict_distribution(x, variance_model.lam)
-
-mult_variance = 8.25
-multiple_model(x, mean, mult_variance, lam1=0, lam2=0)
-print(multiple_model.lam[0], multiple_model.lam[1])
-mult_probs = multiple_model.predict_distribution(x, mean, multiple_model.lam[0], multiple_model.lam[1])
-
-plt.figure(1)
-plt.figure(figsize=(10, 8)) 
-plt.bar(x, mean_probs, align='center', color='blue', edgecolor='black', linewidth=2, alpha=1)
-plt.ylim(0,1)
-plt.xticks(np.arange(0, 10, step=1))
-#plt.title("Mean Constraint")
-plt.ylabel('Probability')
-#plt.xlabel('Classes')
-#plt.legend(["μ =" + str(mean)])
-plt.text(0, 0.85, s="μ=" + str(mean))
-
-#plt.subplot(3,3,2)
-plt.figure(2)
-plt.figure(figsize=(10, 8)) 
-plt.bar(x, var_probs, align='center', color='red', edgecolor='black', linewidth=2, alpha=1)
-plt.ylim(0,1)
-plt.xticks(np.arange(0, 10, step=1))
-#plt.title("Variance Constraint")
-plt.ylabel('Probability')
-#plt.xlabel('Classes')
-#plt.legend(["σ^2 ="+ str(variance)])
-plt.text(0, 0.85, s="σ^2="+ str(variance))
-
-#plt.subplot(3,3,3)
-plt.figure(3)
-plt.figure(figsize=(10, 8)) 
-plt.bar(x, mult_probs, align="center", color='magenta', edgecolor='black', linewidth=2, alpha=1)
-plt.ylim(0,1)
-plt.xticks(np.arange(0, 10, step=1))
-#plt.title("Multiple Constraints")
-plt.ylabel('Probability')
-plt.xlabel('Classes')
-#plt.legend(["μ =" + str(mean) + ", σ^2 ="+ str(variance)])
-plt.text(0, 0.85, s="μ=" + str(mean) + ", σ^2="+ str(variance))
-#print(sum(var_probs * (x - mean)**2))
-
-
-plt.figure(4, figsize=(10*4, 8*4))
-plt.subplot(4,4,1)
-plt.bar(x, mean_probs, align='center', color='blue', edgecolor='black', linewidth=2, alpha=1)
-plt.ylim(0,1)
-plt.xticks(np.arange(0, 10, step=1))
-plt.ylabel('Probability')
-
-plt.subplot(4,4,2)
-plt.bar(x, mean_probs, align='center', color='blue', edgecolor='black', linewidth=2, alpha=1)
-plt.ylim(0,1)
-plt.xticks(np.arange(0, 10, step=1))
-
-plt.subplot(4,4,3)
-plt.bar(x, mean_probs, align='center', color='blue', edgecolor='black', linewidth=2, alpha=1)
-plt.ylim(0,1)
-plt.xticks(np.arange(0, 10, step=1))
-
-plt.subplot(4,4,4)
-plt.bar(x, mean_probs, align='center', color='blue', edgecolor='black', linewidth=2, alpha=1)
-plt.ylim(0,1)
-plt.xticks(np.arange(0, 10, step=1))
-#plt.title("Mean Constraint")
-#plt.xlabel('Classes')
-#plt.legend(["μ =" + str(mean)])
-plt.text(0, 0.85, s="μ=" + str(mean))
-plt.title("Global Gibbs Distributions")
-
-'''
