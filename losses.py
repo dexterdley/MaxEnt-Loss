@@ -110,10 +110,7 @@ class MaxEntLoss(nn.Module):
 
         mult_global_target_var = torch.sum(ratio * (x - mix_mu).pow(2))
         mult_local_target_var = torch.sum(torch.eye(num_classes) * (x- mix_mu).pow(2), dim=1)
-        #mult_local_target_var = torch.sum(dist * (x - global_target_mu).pow(2), dim=1)
-        #mix_mult_var = torch.sum(dist * x.pow(2), dim=1) - mix_mu.pow(2)
 
-        #mix_mult_var = mult_local_target_var 
         mix_mult_var = (mult_global_target_var + mult_local_target_var)/2
 
         self.local_lam_1 = {}
@@ -277,11 +274,9 @@ class AUAvULoss(nn.Module):
             avu_list.append(AvU)
             unc_list.append(unc_th)
 
-        #auc_avu = auc(th_list, avu_list)
         auc_avu = my_auc(th_list, torch.stack(avu_list))
         CE_loss = -torch.sum(y * torch.log(probs.clamp(min=self.eps)), dim=1).mean()
         avu_loss = -self.beta * torch.log(auc_avu + self.eps) + CE_loss
-        #pdb.set_trace()
         return avu_loss, CE_loss
 
 class SoftAUAvULoss(nn.Module):
@@ -374,8 +369,6 @@ class SoftAUAvULoss(nn.Module):
             avu_list.append(AvU)
             unc_list.append(unc_th)
 
-        #pdb.set_trace()
-        #auc_avu = auc(th_list, avu_list)
         auc_avu = my_auc(th_list, torch.stack(avu_list))
         focal_loss, CE_loss = self.focal(probs, y)
 
