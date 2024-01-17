@@ -3,7 +3,7 @@ Official code implementation for the paper MaxEnt Loss: Constrained Maximum Entr
 
 Authors: Dexter Neo, Stefan Winkler, Tsuhan Chen \
 URL: Coming Soon \
-Arxiv: [https://arxiv.org/abs/2211.11838](https://arxiv.org/abs/2310.17159)
+Arxiv: [https://arxiv.org/abs/2310.17159](https://arxiv.org/abs/2310.17159)
 
 ##  Installation Requirements
 We have provided a environment.yml in our repository. 
