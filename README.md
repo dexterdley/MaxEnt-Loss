@@ -1,4 +1,4 @@
-# MaxEnt Loss: Constrained Maximum Entropy for Calibration under Out-of-Distribution Shift (AAAI 24)
+# MaxEnt Loss: Constrained Maximum Entropy for Calibration under Out-of-Distribution Shift (AAAI 24) [Oral]
 Official code implementation for the paper MaxEnt Loss: Constrained Maximum Entropy for Calibration under Out-of-Distribution Shift
 
 Authors: Dexter Neo, Stefan Winkler, Tsuhan Chen \
